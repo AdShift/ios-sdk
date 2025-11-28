@@ -1,0 +1,18 @@
+# Xcode
+.DS_Store
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+DerivedData/
+*.xccheckout
+*.moved-aside
+
+# SPM
+.build/
+.swiftpm/
+
+# Other
+*.swp
+*~
+.env
+
