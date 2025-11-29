@@ -5,6 +5,13 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 ## [1.0.0] - 2025-11-29
 
 ### Changes
+- Fix Package.swift variable interpolation in workflow
+
+---
+
+## [1.0.0] - 2025-11-29
+
+### Changes
 - Update to Xcode 16.1 for CI builds
 
 ---
