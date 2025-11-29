@@ -33,35 +33,35 @@ dependencies: [
 import AdshiftSDK
 ```
 
-### 2. Initialize
+### 2. Configure
 
 ```swift
 // In your AppDelegate or App struct
-Adshift.shared.configure(
-    appId: "YOUR_APP_ID",
-    devKey: "YOUR_DEV_KEY"
-)
+Adshift.shared.apiKey = "YOUR_API_KEY"
+Adshift.shared.isDebug = true  // Optional: Enable debug logs
 ```
 
 ### 3. Start the SDK
 
 ```swift
-// Start tracking
-Adshift.shared.start()
+// Start tracking (call this in applicationDidBecomeActive or view's onAppear)
+Task {
+    await Adshift.shared.start()
+}
 ```
 
 ## 📖 Documentation
 
 For detailed documentation, please visit:
-- [Integration Guide](https://docs.adshift.com/ios)
-- [API Reference](https://docs.adshift.com/ios/api)
-- [Migration Guides](https://docs.adshift.com/ios/migration)
+- [Main Documentation](https://dev.adshift.com/)
+- [iOS SDK Integration Guide](https://dev.adshift.com/docs/ios-sdk)
+- [Deep Linking Guide](https://dev.adshift.com/docs/deeplinks-rightlink)
 
 ## 📋 Requirements
 
 - iOS 15.0+
-- Swift 5.9+
-- Xcode 15.0+
+- Swift 5.7+
+- Xcode 14.0+
 
 ## 🔒 Privacy
 
@@ -79,7 +79,7 @@ This SDK is proprietary software. See [LICENSE](LICENSE) for details.
 ## 🆘 Support
 
 - Email: support@adshift.com
-- Documentation: https://docs.adshift.com
+- Documentation: https://dev.adshift.com
 - Issues: Please contact support (issues are disabled for binary distribution)
 
 ## 📦 Releases
