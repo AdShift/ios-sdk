@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.0.1] - 2025-12-03
+
+### Changes
+- feat: migrate API key validation from management-backend to core-go dl.adshift.com (#6)
+
+---
+
 ## [1.0.0] - 2025-11-29
 
 ### Changes

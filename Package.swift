@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.7
 import PackageDescription
 
 let package = Package(
@@ -14,8 +14,8 @@ let package = Package(
     targets: [
     .binaryTarget(
         name: "AdshiftSDK",
-        url: "https://github.com/AdShift/ios-sdk/releases/download/v1.0.0/AdshiftSDK.xcframework.zip",
-        checksum: "caac11a3675117e66438ecce873c7819934e3d6a7ccf9d3d95e62a77fb8abc4d"
+        url: "https://github.com/AdShift/ios-sdk/releases/download/v1.0.1/AdshiftSDK.xcframework.zip",
+        checksum: "95b762b381f85083e1d5a479168855b9be26e7c12ea44eef961aaf9e0930056e"
     )
     ]
 )
