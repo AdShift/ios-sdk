@@ -30,7 +30,7 @@ dependencies: [
 Add AdShift SDK to your `Podfile`:
 
 ```ruby
-pod 'AdshiftSDK', :podspec => 'https://raw.githubusercontent.com/AdShift/ios-sdk/v1.0.0/AdshiftSDK.podspec'
+pod 'AdshiftSDK', '~> 1.0'
 ```
 
 Then run:
@@ -38,8 +38,6 @@ Then run:
 ```bash
 pod install
 ```
-
-> **Note:** The podspec fetches the pre-built XCFramework from GitHub Releases.
 
 ## 🚀 Quick Start
 
