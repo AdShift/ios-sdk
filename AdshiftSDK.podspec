@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
 
   s.homepage         = 'https://adshift.com'
   s.documentation_url = 'https://dev.adshift.com/docs/ios-sdk'
-  s.license          = { :type => 'Commercial', :file => 'LICENSE' }
+  s.license          = { :type => 'Commercial', :text => 'Copyright (c) 2025 AdShift sp. z o.o. All rights reserved. https://www.adshift.com' }
   s.author           = { 'AdShift' => 'support@adshift.com' }
   
   s.source           = { 
