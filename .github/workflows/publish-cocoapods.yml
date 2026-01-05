@@ -1,0 +1,50 @@
+name: Publish to CocoaPods
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: Publish to CocoaPods Trunk
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: false
+      
+      - name: Install CocoaPods
+        run: gem install cocoapods
+      
+      - name: Get version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Publishing version: $VERSION"
+      
+      - name: Verify podspec version
+        run: |
+          PODSPEC_VERSION=$(grep "s.version" AdshiftSDK.podspec | head -1 | sed "s/.*'\(.*\)'.*/\1/")
+          TAG_VERSION=${{ steps.version.outputs.VERSION }}
+          
+          if [ "$PODSPEC_VERSION" != "$TAG_VERSION" ]; then
+            echo "❌ Version mismatch! Podspec: $PODSPEC_VERSION, Tag: $TAG_VERSION"
+            exit 1
+          fi
+          echo "✅ Version verified: $PODSPEC_VERSION"
+      
+      - name: Publish to CocoaPods Trunk
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: |
+          pod trunk push AdshiftSDK.podspec --allow-warnings
+          echo "✅ Successfully published to CocoaPods!"
+
