@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.2.0] - 2026-02-21
+
+### Changes
+- feat: use dynamic currency rates from backend instead of hardcoded values (#9)
+
+---
+
 ## [1.1.0] - 2026-01-16
 
 ### Changes
