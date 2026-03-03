@@ -14,8 +14,8 @@ let package = Package(
     targets: [
     .binaryTarget(
         name: "AdshiftSDK",
-        url: "https://github.com/AdShift/ios-sdk/releases/download/v1.2.0/AdshiftSDK.xcframework.zip",
-        checksum: "4515f68612ec73b7cf028ff79987bde2811e830c9bad24c7a883b174e4532ad1"
+        url: "https://github.com/AdShift/ios-sdk/releases/download/v1.3.0/AdshiftSDK.xcframework.zip",
+        checksum: "7e53a128a1c9fc66d524c04e2ccdec7d277e3fc8fca7f657effd2e93da380ad2"
     )
     ]
 )
