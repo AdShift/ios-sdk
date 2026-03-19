@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.4.0] - 2026-03-19
+
+### Changes
+- feat: add Apple AdServices attribution token support (#11)
+
+---
+
 ## [1.3.0] - 2026-03-03
 
 ### Changes
