@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.5.0] - 2026-05-08
+
+### Changes
+- Merge pull request #14 from AdShift/release/v1.5.0
+
+---
+
 ## [1.4.0] - 2026-03-19
 
 ### Changes
