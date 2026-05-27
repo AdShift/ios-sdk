@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.6.0] - 2026-05-27
+
+### Changes
+- Merge pull request #15 from AdShift/feat/getadshiftdeviceid-public-api
+
+---
+
 ## [1.5.0] - 2026-05-08
 
 ### Changes
