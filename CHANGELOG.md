@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.7.0] - 2026-06-19
+
+### Changes
+- Merge pull request #16 from AdShift/feat/ios-sdk-tracking-twin-hosts
+
+---
+
 ## [1.6.0] - 2026-05-27
 
 ### Changes
