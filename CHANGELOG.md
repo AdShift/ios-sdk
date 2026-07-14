@@ -4,8 +4,15 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 
 ## [1.8.0] - 2026-07-14
 
-### Changes
-- test(privacy): correct rightlink.me tracking-domain rationale for on-device short link resolution
+### Added
+- **On-device short link resolution** — short RightLinks now resolve inside the installed app, delivering the same deep-link data and attribution as long links across Universal Links, QR codes, and push notifications.
+- **Push notification attribution** — taps on push notifications that carry a RightLink are now attributed for re-engagement.
+
+### Changed
+- **SKAdNetwork** — ad revenue is now included in the conversion value calculation.
+
+### Fixed
+- Corrected SKAdNetwork attribution registration.
 
 ---
 
