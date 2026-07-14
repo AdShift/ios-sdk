@@ -1,6 +1,17 @@
 # AdShift iOS SDK
 
+[![GitHub release](https://img.shields.io/github/v/release/AdShift/ios-sdk?sort=semver)](https://github.com/AdShift/ios-sdk/releases/latest)
+[![Swift Package Manager](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+[![Platform](https://img.shields.io/badge/platform-iOS%2015%2B-blue.svg)](https://developer.apple.com/ios/)
+[![License](https://img.shields.io/badge/license-Proprietary-lightgrey.svg)](LICENSE)
+
 The AdShift iOS SDK enables app install tracking, deep linking, in-app event attribution, and StoreKit Ad Network (SKAN) 4.0+ support.
+
+## Latest version
+
+- Latest release & release notes: https://github.com/AdShift/ios-sdk/releases/latest
+- All versions: https://github.com/AdShift/ios-sdk/releases
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## 📦 Installation
 
