@@ -2,6 +2,13 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [1.8.0] - 2026-07-14
+
+### Changes
+- test(privacy): correct rightlink.me tracking-domain rationale for on-device short link resolution
+
+---
+
 ## [1.7.0] - 2026-06-19
 
 ### Changes
