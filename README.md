@@ -25,14 +25,14 @@ Add AdShift SDK to your project using Xcode:
    ```
    https://github.com/AdShift/ios-sdk
    ```
-4. Select version rules (e.g., "Up to Next Major Version" starting from `1.0.0`)
+4. Select version rules (e.g., "Up to Next Major Version" starting from `2.0.0`)
 5. Click **Add Package**
 
 Or add it manually to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AdShift/ios-sdk", from: "1.0.0")
+    .package(url: "https://github.com/AdShift/ios-sdk", from: "2.0.0")
 ]
 ```
 
@@ -41,7 +41,7 @@ dependencies: [
 Add AdShift SDK to your `Podfile`:
 
 ```ruby
-pod 'AdshiftSDK', '~> 1.0'
+pod 'AdshiftSDK', '~> 2.0'
 ```
 
 Then run:
