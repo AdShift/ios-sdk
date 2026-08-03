@@ -13,10 +13,16 @@ Major release covering consent handling and device identity. Existing integratio
 - **The AdShift device ID is written once** — it is no longer regenerated when ad storage is denied, so `getAdShiftDeviceId()` stays stable for the lifetime of the install. Users are no longer counted more than once after a consent change, and subscription platforms such as RevenueCat and Adapty stitch reliably against it.
 - **Consent survives app restarts** — a value passed to `setConsentData` is stored and reapplied on the next launch, together with the advertising identifier gate.
 - **`start()` no longer waits for API key validation** — the first session is recorded immediately and validation continues in the background, so a slow network does not delay the first event.
+- **An unreachable backend no longer costs events** — validation resolves to a valid, invalid or unknown verdict retried with backoff, and no outcome clears the queue.
 
 ### Added
+- **Time in app** — every app open reports a lifetime foreground-time counter, which the backend turns into time-in-app and session-length metrics.
 - **Device details** — events carry the device type and hardware model (for example `iPhone14,2`), previously reported only as the device family.
-- **Delivery reliability** — events are written to disk before any network call and retried from a crash-safe queue, each carrying an identifier that lets the backend drop duplicates.
+- **Delivery reliability** — events are written to disk before any network call and retried from a crash-safe queue with per-endpoint backoff, each carrying an identifier that lets the backend drop duplicates. Server-to-server clicks use the same persistent queue.
+
+### Fixed
+- **Deferred deep links survive a failed first attempt** — the one-shot flag is now consumed only after a definitive answer from the backend, so a network failure on the first launch no longer costs the deferred deep link.
+- **Legitimate interest counts for TCF purpose 7** — users covered by a legitimate-interest basis under a TCF CMP are no longer treated as having denied measurement.
 
 ### Upgrading
 - Swift Package Manager: `from: "2.0.0"`. CocoaPods: `pod 'AdshiftSDK', '~> 2.0'`.
