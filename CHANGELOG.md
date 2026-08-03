@@ -2,6 +2,29 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [2.0.0] - unreleased
+
+Major release covering consent handling and device identity. Existing integrations compile without source changes — review the upgrade notes below.
+
+### Changed
+- **Consent flags are tri-state** — `AdShiftConsent.forGDPRUser` accepts `Bool?`, where `nil` means the user has not made a decision. This lets us tell "denied" apart from "never asked" when forwarding consent to partners. Existing three-argument calls compile unchanged.
+- **Non-GDPR users report granted consent** — `forNonGDPRUser()` now returns granted flags instead of denied ones. If your app branches on `isConsentGranted()`, the result changes.
+- **The advertising identifier follows consent** — the IDFA is read only when ATT is authorized and no consent denial is stored. Previously a denial cleared the cached value and the next refresh read it again.
+- **The AdShift device ID is written once** — it is no longer regenerated when ad storage is denied, so `getAdShiftDeviceId()` stays stable for the lifetime of the install. Users are no longer counted more than once after a consent change, and subscription platforms such as RevenueCat and Adapty stitch reliably against it.
+- **Consent survives app restarts** — a value passed to `setConsentData` is stored and reapplied on the next launch, together with the advertising identifier gate.
+- **`start()` no longer waits for API key validation** — the first session is recorded immediately and validation continues in the background, so a slow network does not delay the first event.
+
+### Added
+- **Device details** — events carry the device type and hardware model (for example `iPhone14,2`), previously reported only as the device family.
+- **Delivery reliability** — events are written to disk before any network call and retried from a crash-safe queue, each carrying an identifier that lets the backend drop duplicates.
+
+### Upgrading
+- Swift Package Manager: `from: "2.0.0"`. CocoaPods: `pod 'AdshiftSDK', '~> 2.0'`.
+- Pass `nil` for a consent flag the user has not decided on.
+- Review any logic that depends on the flags returned by `forNonGDPRUser()`.
+
+---
+
 ## [1.8.0] - 2026-07-14
 
 ### Added
