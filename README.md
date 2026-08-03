@@ -5,30 +5,27 @@
 [![Platform](https://img.shields.io/badge/platform-iOS%2015%2B-blue.svg)](https://developer.apple.com/ios/)
 [![License](https://img.shields.io/badge/license-Proprietary-lightgrey.svg)](LICENSE)
 
-The AdShift iOS SDK enables app install tracking, deep linking, in-app event attribution, and StoreKit Ad Network (SKAN) 4.0+ support.
+The AdShift iOS SDK measures installs and in-app events, resolves direct and deferred deep links, supports SKAdNetwork 4.0, and carries ATT and user consent signals to ad partners.
 
-## Latest version
+This repository is the public home for the SDK's release notes and distribution. The SDK is proprietary and ships as a binary XCFramework attached to each release — there is no source code here.
 
-- Latest release & release notes: https://github.com/AdShift/ios-sdk/releases/latest
-- All versions: https://github.com/AdShift/ios-sdk/releases
+## Release notes
+
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
+- Latest release: https://github.com/AdShift/ios-sdk/releases/latest
+- All releases: https://github.com/AdShift/ios-sdk/releases
 
-## 📦 Installation
+## Installation
 
-### Swift Package Manager (Recommended)
+### Swift Package Manager
 
-Add AdShift SDK to your project using Xcode:
+In Xcode, go to **File → Add Package Dependencies…** and enter:
 
-1. Open your project in Xcode
-2. Go to **File → Add Package Dependencies...**
-3. Enter the repository URL:
-   ```
-   https://github.com/AdShift/ios-sdk
-   ```
-4. Select version rules (e.g., "Up to Next Major Version" starting from `2.0.0`)
-5. Click **Add Package**
+```
+https://github.com/AdShift/ios-sdk
+```
 
-Or add it manually to your `Package.swift`:
+Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
@@ -38,76 +35,40 @@ dependencies: [
 
 ### CocoaPods
 
-Add AdShift SDK to your `Podfile`:
-
 ```ruby
 pod 'AdshiftSDK', '~> 2.0'
 ```
 
-Then run:
+Required Info.plist entries, entitlements and the ATT setup are covered in the [installation guide](https://dev.adshift.com/docs/ios-sdk/installation).
 
-```bash
-pod install
-```
+## Documentation
 
-## 🚀 Quick Start
+The full documentation lives at [dev.adshift.com](https://dev.adshift.com/docs/ios-sdk):
 
-### 1. Import the SDK
+| | |
+|---|---|
+| [Quickstart](https://dev.adshift.com/docs/ios-sdk/quickstart) | Minimal integration, start to finish |
+| [Integration](https://dev.adshift.com/docs/ios-sdk/integration) | Initialization, lifecycle and configuration |
+| [In-app events](https://dev.adshift.com/docs/ios-sdk/events) · [Ad revenue](https://dev.adshift.com/docs/ios-sdk/ad-revenue) | Event tracking and monetization |
+| [Deep links](https://dev.adshift.com/docs/ios-sdk/deeplinks) | Universal Links, deferred links and RightLinks |
+| [Consent](https://dev.adshift.com/docs/ios-sdk/consent) | ATT, GDPR, TCF 2.2 and Google consent signals |
+| [SKAdNetwork](https://dev.adshift.com/docs/ios-sdk/skan) | Conversion values and SKAN 4.0 windows |
+| [Push notifications](https://dev.adshift.com/docs/ios-sdk/push-notifications) | Attributing push-driven re-engagement |
+| [Troubleshooting](https://dev.adshift.com/docs/ios-sdk/troubleshooting) · [Debugging](https://dev.adshift.com/docs/ios-sdk/debugging) | Verifying an integration |
 
-```swift
-import AdshiftSDK
-```
+## Requirements
 
-### 2. Configure
+- iOS 15.0 or newer
+- Swift 5.7+, Xcode 14.0+
 
-```swift
-// In your AppDelegate or App struct
-Adshift.shared.apiKey = "YOUR_API_KEY"
-Adshift.shared.isDebug = true  // Optional: Enable debug logs
-```
-
-### 3. Start the SDK
-
-```swift
-// Start tracking (call this in applicationDidBecomeActive or view's onAppear)
-Task {
-    await Adshift.shared.start()
-}
-```
-
-## 📖 Documentation
-
-For detailed documentation, please visit:
-- [Main Documentation](https://dev.adshift.com/)
-- [iOS SDK Integration Guide](https://dev.adshift.com/docs/ios-sdk)
-- [Deep Linking Guide](https://dev.adshift.com/docs/deeplinks-rightlink)
-
-## 📋 Requirements
-
-- iOS 15.0+
-- Swift 5.7+
-- Xcode 14.0+
-
-## 🔒 Privacy
-
-AdShift SDK respects user privacy and complies with:
-- App Tracking Transparency (ATT)
-- GDPR/TCF 2.2
-- Apple Privacy Manifest
-
-## 📝 License
-
-Copyright © 2025 AdShift sp. z o.o. All rights reserved.
-
-This SDK is proprietary software. See [LICENSE](LICENSE) for details.
-
-## 🆘 Support
+## Support
 
 - Email: support@adshift.com
 - Documentation: https://dev.adshift.com
-- Issues: Please contact support (issues are disabled for binary distribution)
+- Issues are disabled here; please contact support.
 
-## 📦 Releases
+## License
 
-See [Releases](https://github.com/AdShift/ios-sdk/releases) for version history and changelogs.
+Copyright © 2026 AdShift sp. z o.o. All rights reserved.
 
+This SDK is proprietary software. See [LICENSE](LICENSE) for details.
