@@ -14,20 +14,26 @@ Major release covering consent handling and device identity. Existing integratio
 - **Consent survives app restarts** — a value passed to `setConsentData` is stored and reapplied on the next launch, together with the advertising identifier gate.
 - **`start()` no longer waits for API key validation** — the first session is recorded immediately and validation continues in the background, so a slow network does not delay the first event.
 - **An unreachable backend no longer costs events** — validation resolves to a valid, invalid or unknown verdict retried with backoff, and no outcome clears the queue.
+- **Both completion handlers report differently** — `start()` returns `api_key_validation_status` (`pending`, `valid` or `invalid`) in place of `api_key_validated`, and a rejected key now arrives as that status instead of through the error path. `track()` answers `queued` for every accepted event, since events reach the disk queue before any network call, and no longer answers `success`. Nothing fails to compile here, so review any code that reads these dictionaries.
 
 ### Added
 - **Time in app** — every app open reports a lifetime foreground-time counter, which the backend turns into time-in-app and session-length metrics.
 - **Device details** — events carry the device type and hardware model (for example `iPhone14,2`), previously reported only as the device family.
 - **Delivery reliability** — events are written to disk before any network call and retried from a crash-safe queue with per-endpoint backoff, each carrying an identifier that lets the backend drop duplicates. Server-to-server clicks use the same persistent queue.
+- **Server-side opt-out** — a response can permanently disable tracking for a device. The SDK then clears both queues, stops sending, and reports the new `AdShiftError.trackingDisabled` from `start()` and from deep link handling.
+- **The opening link is forwarded whole** — `app_install` and `app_open`, including a foreground open, carry the full deep link as `deeplink_url`, and a server-to-server click carries it as `raw_url`. A link over 2048 bytes is left out rather than shortened, so the server never receives half a link — the event or click is still sent, only without it. This lets attribution be resolved for link formats the SDK does not parse itself, so a campaign no longer has to use a link shape the SDK recognises. The presence of a link is not an attribution claim. Credential-shaped parameters are removed on receipt and are not stored. No integration change is needed.
+- **Full link logging follows `isDebug`** — the link an app was opened with is logged at debug level, so it stays out of device logs unless debug logging is switched on.
 
 ### Fixed
-- **Deferred deep links survive a failed first attempt** — the one-shot flag is now consumed only after a definitive answer from the backend, so a network failure on the first launch no longer costs the deferred deep link.
+- **Deferred deep links survive a failed first attempt** — the one-shot lookup is now consumed only after the backend answers, so a network failure on the first launch no longer costs the deferred deep link. An answer of "there is none" ends it just as definitively, and the SDK stops asking.
 - **Legitimate interest counts for TCF purpose 7** — users covered by a legitimate-interest basis under a TCF CMP are no longer treated as having denied measurement.
+- **Deep link sub-parameters read the right keys** — `deep_link_sub1…5` in the deep link result are filled from the link's `deep_link_sub*` parameters. They previously carried the attribution `as_sub*` values, which is not what those fields are for.
 
 ### Upgrading
 - Swift Package Manager: `from: "2.0.0"`. CocoaPods: `pod 'AdshiftSDK', '~> 2.0'`.
 - Pass `nil` for a consent flag the user has not decided on.
 - Review any logic that depends on the flags returned by `forNonGDPRUser()`.
+- Update anything that reads the dictionaries returned by `start()` or `track()`, and anything that expects deep link data in `as_sub*` rather than `deep_link_sub*`.
 
 ---
 
