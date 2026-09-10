@@ -2,7 +2,7 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [2.0.0] - unreleased
+## [2.0.0] - 2026-09-10
 
 Major release covering consent handling and device identity. Existing integrations compile without source changes — review the upgrade notes below.
 
