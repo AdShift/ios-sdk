@@ -2,6 +2,11 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [2.0.1] - Unreleased
+
+### Changed
+- **Deep link listeners stay registered** — a closure passed to `onDeepLinkReceived` receives every subsequent deep link result, not only the first one; the most recent result is still delivered immediately on registration.
+
 ## [2.0.0] - 2026-09-10
 
 Major release covering consent handling and device identity. Existing integrations compile without source changes — review the upgrade notes below.
