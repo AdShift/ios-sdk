@@ -2,9 +2,18 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [2.0.1] - 2026-09-10
+## [2.0.2] - Unreleased
+
+### Fixed
+- **The privacy report lists two more data types** — the SDK's privacy manifest now declares `User ID` and `Advertising Data`, which Xcode folds into your app's privacy report. Both are collected only when your app asks for it: `User ID` when you call `setCustomerUserId`, `Advertising Data` when you call `logAdRevenue`. Check your App Privacy answers against the regenerated report.
+- **A deferred result says that it is deferred** — a deep link resolved after install now carries `isDeferred` and `status` (`found` or `notFound`), the same two fields a direct link has always carried, instead of leaving both unset. Code that inferred them from the presence of `deep_link_value` can read them directly.
 
 ### Changed
+- **"No deferred deep link" is now delivered, not only logged** — when an install had no click before it, your `onDeepLinkReceived` closure receives a result with `status == .notFound` and `isDeferred == true`, so you can tell it apart from a resolve still in flight. Previously nothing arrived. A link the app was actually opened with is never replaced by this answer.
+
+## [2.0.1] - 2026-09-10
+
+### Fixed
 - **Deep link listeners stay registered** — a closure passed to `onDeepLinkReceived` receives every subsequent deep link result, not only the first one; the most recent result is still delivered immediately on registration.
 
 ## [2.0.0] - 2026-09-10
