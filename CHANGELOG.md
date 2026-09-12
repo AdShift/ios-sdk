@@ -2,9 +2,19 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [2.0.1] - 2026-09-10
+## [2.1.0] - Unreleased
+
+### Fixed
+- **The privacy report lists two more data types** — the SDK's privacy manifest now declares `User ID` and `Advertising Data`. `User ID` covers the identifier you set with `setCustomerUserId`. `Advertising Data` covers ad revenue reported through `logAdRevenue` and also the campaign details and Apple attribution token that installs and app opens carry on their own, so treat it as collected by default. Check your App Privacy answers against the regenerated report.
+- **A deferred result says that it is deferred** — a deep link resolved after install now carries `isDeferred` and `status` (`found` or `notFound`), the same two fields a direct link has always carried, instead of leaving both unset. A result that routes only through `deep_link_sub1`–`deep_link_sub5`, with no `deep_link_value`, counts as `found`. Code that inferred either field from the presence of a value can read them directly.
 
 ### Changed
+- **A link the user opened the app with always wins** — a deferred result no longer replaces it, whether or not that result has a destination of its own. Previously a deferred answer that arrived second overwrote the link the app was launched from.
+- **"No deferred deep link" is delivered rather than only logged** — on the launch after an install that had no click before it, `onDeepLinkReceived` receives `status == .notFound` with `isDeferred == true`, so that case is no longer indistinguishable from a lookup still in flight. The same answer arrives when tracking authorization is denied or restricted, where there is no identifier to look anything up with. It is delivered at most once per launch and never after a destination, so an app that routes on every result is not sent back.
+
+## [2.0.1] - 2026-09-10
+
+### Fixed
 - **Deep link listeners stay registered** — a closure passed to `onDeepLinkReceived` receives every subsequent deep link result, not only the first one; the most recent result is still delivered immediately on registration.
 
 ## [2.0.0] - 2026-09-10
