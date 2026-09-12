@@ -22,6 +22,16 @@ Pod::Spec.new do |s|
   s.swift_version    = '5.0'
   
   s.vendored_frameworks = 'AdshiftSDK.xcframework'
+
+  # The framework is static, so CocoaPods links it without embedding it and
+  # nothing inside it reaches the app bundle -- including the privacy manifest
+  # Xcode reads when it builds the privacy report and when it enforces the
+  # declared tracking domains. Shipping the manifest as a resource bundle as
+  # well is what puts it where Xcode looks. Swift Package Manager embeds the
+  # framework itself, so it needs none of this.
+  s.resource_bundles = {
+    'AdshiftSDK' => ['AdshiftSDK.xcframework/ios-arm64/AdshiftSDK.framework/PrivacyInfo.xcprivacy']
+  }
   
   # Wymagane frameworki systemowe
   s.frameworks       = 'Foundation', 'UIKit', 'StoreKit', 'AdSupport', 'AppTrackingTransparency'
