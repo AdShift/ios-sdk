@@ -2,7 +2,7 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [2.1.0] - Unreleased
+## [2.2.0] - Unreleased
 
 ### Fixed
 - **The privacy report lists two more data types** — the SDK's privacy manifest now declares `User ID` and `Advertising Data`. `User ID` covers the identifier you set with `setCustomerUserId`. `Advertising Data` covers ad revenue reported through `logAdRevenue` and also the campaign details and Apple attribution token that installs and app opens carry on their own, so treat it as collected by default. Check your App Privacy answers against the regenerated report.
