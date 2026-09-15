@@ -16,6 +16,13 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 - **`consentRequired` and `consentNotRequired`** — the same two factories as `forGDPRUser` and `forNonGDPRUser`, under names that say what they decide. The old names keep working.
 - **The `AdShiftConsent` initialiser is public** — you can state scope and flags directly instead of going through a factory, which is what makes consent collected outside GDPR scope expressible.
 
+### Removed
+- **Types that were never meant to be callable are no longer public** — the SDK now carries a record of its public API, and setting it up showed that 28 of its 41 public types were public because of how the module is put together, not because an app needs them. They are internal as of this release. Nothing removed here appears in any documented signature; if you had reached for one, the compiler says so immediately.
+
+  Two of them are worth calling out, because their absence is likely to help rather than hurt: importing the SDK used to put `Formatter` and `Logger` into your app at top level, contesting the names `Foundation` and `OSLog` use. Along with them went `Level`, `Theme`, `Component`, and the SKAN configuration models `Window1`, `Window2`, `Window3`, `Windows`, `W1Fine`, `LockBy`, `LockConfig`, `LockWindow`, `CoarseRule`, `FineRule`, `AnyCodable`, `CurrencyRates`, `SSOTConfig` and their neighbours, none of which the SDK ever accepted or returned. The wire event model and the networking protocol went with them.
+
+  What stays public is what you call the SDK with: `Adshift`, `AdShiftConsent`, `AdShiftThirdPartySharing`, `ConsentSnapshot`, `ASInAppEventType`, `ASInAppEventParameterName`, `ASAdRevenueData`, `ASMediationNetwork`, the deep link result types and `AdShiftError`.
+
 ### Fixed
 - **The privacy report lists two more data types** — the SDK's privacy manifest now declares `User ID` and `Advertising Data`. `User ID` covers the identifier you set with `setCustomerUserId`. `Advertising Data` covers ad revenue reported through `logAdRevenue` and also the campaign details and Apple attribution token that installs and app opens carry on their own, so treat it as collected by default. Check your App Privacy answers against the regenerated report.
 - **A deferred result says that it is deferred** — a deep link resolved after install now carries `isDeferred` and `status` (`found` or `notFound`), the same two fields a direct link has always carried, instead of leaving both unset. A result that routes only through `deep_link_sub1`–`deep_link_sub5`, with no `deep_link_value`, counts as `found`. Code that inferred either field from the presence of a value can read them directly.
