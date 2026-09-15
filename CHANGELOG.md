@@ -2,7 +2,7 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [2.2.0] - Unreleased
+## [2.2.0] - 2026-09-15
 
 ### Changed
 - **Non-GDPR users no longer report granted consent** — `forNonGDPRUser()` and `consentNotRequired()` state the scope and nothing else; the three consent flags come back as `nil` and go on the wire unset. **This supersedes the 2.0.0 note that said these flags report as granted**, so if you followed that note and branched on them, read this one. Nothing changes about what is gated: outside GDPR scope nothing was ever gated on those flags, and `isConsentGranted()` still answers `true`. The old values were a record claiming a consent nobody had collected, which is why they are gone. If you do collect consent outside GDPR scope and want it on record, state it with the `AdShiftConsent` initialiser, now public.
