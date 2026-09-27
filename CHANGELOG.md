@@ -2,6 +2,16 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [2.3.0] - unreleased
+
+### Added
+- **Google on-device conversion measurement** — when your app carries Google's on-device conversion library (`GoogleAdsOnDeviceConversion`, or Firebase Analytics 11.14 and later), the SDK asks it for the install's conversion info on the first launch and sends it with the install, so Google Ads can measure the install without an advertising identifier. The library is found at run time: the SDK does not depend on it, and apps without it are not affected. The info is obtained in parallel with the Apple Search Ads token, so the install waits for the slower of the two and never for both. Set `Adshift.shared.googleOnDeviceMeasurement = .disabled` before `start()` to never call the library; Google's `GOOGLE_ADS_ON_DEVICE_CONVERSION_EVENT_DATA_ENABLED = NO` in `Info.plist` disables it as well. The SDK does not call the library when the user has explicitly refused ad user data, or when the app was installed long before this SDK version reached it. In the AdShift panel the Google Ads integration shows whether the SDK finds the library and whether the info arrives; the switch **Share installs without an advertising identifier** has to be on for the info to reach Google.
+- **`setGoogleOdmInfo(_:)`** — for apps that call Google's library themselves and already hold the info it returned: pass it before `start()` on the first launch and the SDK will not call the library.
+- **`GoogleOnDeviceMeasurement`** — the `.automatic` / `.disabled` choice above.
+
+### Changed
+- **The install carries a few more fields** — `google_odm_state` (why the info is or is not on the install), `google_odm_wait_ms` and `google_odm_lib_version`, and the next `app_open` may carry `google_odm_late_ms` once. They are facts about the install and are visible where installs are; the conversion info itself is not.
+
 ## [2.2.0] - 2026-09-15
 
 ### Changed
