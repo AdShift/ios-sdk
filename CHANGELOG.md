@@ -12,7 +12,7 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 ### Changed
 - **Apps with Firebase Analytics 11.14 or later** — Firebase already contains Google's library, so after updating to 2.3.0 the SDK starts asking it on fresh installs, with no code change. The library shipped in Firebase 12.11–12.12 (3.4.x) has a known crash and is not called. Use `.disabled` to opt out.
 - **Call `start()` in the app's first session** — Google's library needs the moment the app was first launched, and the SDK gives it the start of the first launch in which `start()` runs. Postponing `start()` to a later session reports a later first launch.
-- **`start()` no longer waits for the install on a first launch** — its completion, the deferred deep link lookup and app-open tracking begin at once. The install still waits up to 2.5 seconds for the Apple Search Ads token and Google's info, and no event is sent before it.
+- **`start()` no longer waits for the install on a first launch** — its completion and the deferred deep link lookup begin at once.
 
 ## [2.2.0] - 2026-09-15
 
