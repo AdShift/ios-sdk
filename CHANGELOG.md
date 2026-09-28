@@ -13,6 +13,7 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 - **Apps with Firebase Analytics 11.14 or later** — Firebase already contains Google's library, so after updating to 2.3.0 the SDK starts asking it on fresh installs, with no code change. The library shipped in Firebase 12.11–12.12 (3.4.x) has a known crash and is not called. Use `.disabled` to opt out.
 - **Call `start()` in the app's first session** — Google's library needs the moment the app was first launched, and the SDK gives it the start of the first launch in which `start()` runs. Postponing `start()` to a later session reports a later first launch.
 - **`start()` no longer waits for the install on a first launch** — its completion and the deferred deep link lookup begin at once.
+- **`waitForATTBeforeStart` holds event delivery, not `start()`** — `start()` completes at once and events are recorded as usual; their delivery waits for the ATT answer, up to `attTimeoutMs`. The wait happens once per install and counts only while the app is in the foreground.
 
 ## [2.2.0] - 2026-09-15
 
