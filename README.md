@@ -59,7 +59,7 @@ The full documentation lives at [dev.adshift.com](https://dev.adshift.com/docs/i
 ## Requirements
 
 - iOS 15.0 or newer
-- Swift 5.7+, Xcode 14.0+
+- Xcode 16.1+
 
 ## Support
 
