@@ -29,14 +29,14 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AdShift/ios-sdk", from: "2.0.0")
+    .package(url: "https://github.com/AdShift/ios-sdk", from: "2.3.0")
 ]
 ```
 
 ### CocoaPods
 
 ```ruby
-pod 'AdshiftSDK', '~> 2.0'
+pod 'AdshiftSDK', '~> 2.3'
 ```
 
 Required Info.plist entries, entitlements and the ATT setup are covered in the [installation guide](https://dev.adshift.com/docs/ios-sdk/installation).
