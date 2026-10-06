@@ -29,17 +29,17 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AdShift/ios-sdk", from: "2.3.0")
+    .package(url: "https://github.com/AdShift/ios-sdk", from: "2.4.0")
 ]
 ```
 
 ### CocoaPods
 
 ```ruby
-pod 'AdshiftSDK', '~> 2.3'
+pod 'AdshiftSDK', '~> 2.4'
 ```
 
-Required Info.plist entries, entitlements and the ATT setup are covered in the [installation guide](https://dev.adshift.com/docs/ios-sdk/installation).
+Required Info.plist entries, entitlements and the ATT setup are covered in the [installation guide](https://dev.adshift.com/docs/ios-sdk/installation). Two keys make Apple send AdShift a copy of each winning postback: `NSAdvertisingAttributionReportEndpoint` for SKAdNetwork and `AttributionCopyEndpoint` for AdAttributionKit (iOS 17.4+), both set to `https://adshift.com`. With `isDebug = true`, the SDK logs on start when either is missing.
 
 ## Documentation
 
