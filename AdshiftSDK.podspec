@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'AdshiftSDK'
-  s.version          = '2.2.0'
+  s.version          = '2.4.0'
   s.summary          = 'AdShift iOS SDK - Mobile Attribution & Analytics'
   
   s.description      = <<-DESC

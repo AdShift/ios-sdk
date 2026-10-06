@@ -2,7 +2,7 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [2.4.0] - unreleased
+## [2.4.0] - 2026-10-06
 
 2.3.0 was not published; everything it contained ships in this release.
 
