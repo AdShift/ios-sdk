@@ -16,27 +16,26 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 ### Changed
 - **Navigate only on `found`** — `found` now means a RightLink link: your `*.rightlink.me` host or a domain in `brandedDomains`. Any other URL comes back `notFound` with the URL in `deeplink`, and creates no click. 2.x answered `found` for every URL.
 - **Each result is delivered once** — results that came before any listener, up to the last five, go to the first listener registered; a listener registered later gets no replay. 2.x replayed the most recent result to every new listener.
-- **A short link that cannot be resolved yet comes as `error`** — `.network` without a network, `.timeout` or `.server` otherwise. The SDK tries again when the network is back or at the next start and delivers `found` then; an hour after the tap it stops. A deleted link is `notFound`.
+- **A short link that cannot be resolved yet comes as `error`** — with `.network`, `.timeout` or `.server`. The SDK tries again when the network is back or at the next start and delivers `found` then; an hour after the tap it stops. A deleted link, or one the SDK gave up on, is `notFound`.
 - **A tap on a short link is counted when it happens, also without a network** — a tap your listener saw as `error` is already counted.
-- **Values appended to a short link are reported** — `as_sub1`…`as_sub5` and the other values in a short link's query go with the open, as for a long link; the source and the campaign always come from the link itself.
+- **Values appended to a short link are reported** — values in a short link's own query, such as `as_sub1`…`as_sub5`, go with the open, as for a long link; the source, the campaign and the link's settings always come from the link itself.
 - **The deferred deep link answers within 5 seconds of `start()`** — the link, `notFound` or `error`. With `waitForATTBeforeStart` it answers within 5 seconds of the ATT answer; with `.pasteControl`, within 5 seconds of the paste. A later answer is not delivered in that session, so the screen does not change under the user; the next start asks again.
 - **Deferred deep link without an advertising identifier** — with no IDFA and no clipboard token the link can still arrive, with `matchGuaranteed == false`. After an ATT refusal the link still arrives, but the install is not attributed to its click. There is no lookup when the user denied ad storage or ad user data in your consent.
 - **A deferred result has no `deeplink`** — its link is in `deep_link_value` and `deep_link_sub1`…`deep_link_sub5`.
 - **The same link passed twice counts once** — for example from the scene and from `onOpenURL`, or a notification tapped twice.
 - **After `stop()` links still reach your listener** — nothing is sent, and `handleDeepLink(url:)` no longer throws `trackingDisabled`.
-- **Only attribution parameters leave the device** — of a link's query the SDK sends `pid`, `c`, `as_*`, `utm_*`, `deep_link_value`, `deep_link_sub1`…`5` and click ids; any other key stays in `params` for your app.
+- **Only attribution parameters leave the device** — of a link's query the SDK sends `pid`, `c` or `campaign`, `is_retargeting`, `as_*`, `utm_*`, `deep_link_value`, `deep_link_sub1`…`5` and click ids; any other key stays in `params` for your app.
 - **One `app_open` per open** — an open by a link is one `app_open` that carries the link's click. 2.x could send two for the same open.
 - **A backup restored onto another device is a new install.**
 - **No web view at launch** — the SDK no longer creates a hidden `WKWebView`, and no longer links WebKit.
 - **SKAN: a coarse value that rises while the fine value stays the same is now sent.**
-- **SKAN revenue comes from `as_revenue`, else `revenue`, never `value`** — with the currency from `as_currency` or `currency`, else USD.
+- **SKAN revenue comes from `as_revenue` with `as_currency`, else `revenue` with `currency`, never `value`** — USD when the pair has no currency.
 - **The 10 USD ad revenue cap applies after currency conversion** — so a small amount in a currency with many units per dollar, such as 50 KRW, now counts.
 - **The privacy report lists Coarse Location and Other Diagnostic Data** — the SDK's privacy manifest now declares both. Check your App Privacy answers against the regenerated report.
 
 ### Fixed
 - **Apps with scenes lose no link on a cold start** — the scene helpers above take it out of the connection options.
-- **A link passed after `start()` is counted** — for example from SwiftUI's `onOpenURL` after `onAppear`; 2.x recorded no click for it.
-- **SKAN revenue in a currency other than USD is converted correctly** — 2.4.0 applied the rate the wrong way round.
+- **A link passed after `start()` goes on the open's `app_open`** — for example from SwiftUI's `onOpenURL` after `onAppear`; in 2.x that `app_open` went without the link.
 - **An Apple Ads attribution token that arrives late still goes with the install.**
 
 ### Upgrading
