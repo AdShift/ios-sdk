@@ -26,16 +26,12 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 - **After `stop()` links still reach your listener** — nothing is sent, and `handleDeepLink(url:)` no longer throws `trackingDisabled`.
 - **Only attribution parameters leave the device** — of a link's query the SDK sends `pid`, `c` or `campaign`, `is_retargeting`, `as_*`, `utm_*`, `deep_link_value`, `deep_link_sub1`…`5` and click ids; any other key stays in `params` for your app.
 - **One `app_open` per open** — an open by a link is one `app_open` that carries the link's click. 2.x could send two for the same open.
-- **A backup restored onto another device is a new install.**
-- **No web view at launch** — the SDK no longer creates a `WKWebView` and no longer links WebKit.
-- **SKAN: a coarse value that rises while the fine value stays the same is now sent.**
 - **SKAN revenue comes from `as_revenue` with `as_currency`, else `revenue` with `currency`, never `value`** — USD when the pair has no currency.
 - **The 10 USD ad revenue cap applies after currency conversion** — so a small amount in a currency with many units per dollar, such as 50 KRW, now counts.
 - **The privacy report lists Coarse Location and Other Diagnostic Data** — the SDK's privacy manifest now declares both.
 
 ### Fixed
 - **A link passed after `start()` goes on the open's `app_open`** — for example from SwiftUI's `onOpenURL` after `onAppear`; in 2.x that `app_open` went without the link.
-- **An Apple Ads attribution token that arrives late still goes with the install.**
 
 ### Upgrading
 - **Depend on 3.0** — Swift Package Manager `from: "3.0.0"`, CocoaPods `pod 'AdshiftSDK', '~> 3.0'`.
