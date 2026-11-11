@@ -2,6 +2,65 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [3.0.0] - unreleased
+
+### Added
+- **Universal Link helpers for apps with scenes** — `handleDeepLink(userActivity:)` and `handleDeepLink(connectionOptions:)` pass the link on to `handleDeepLink(url:)`. Call the first from `application(_:continue:restorationHandler:)` and `scene(_:continue:)`, the second from `scene(_:willConnectTo:options:)`: on a cold start in an app with scenes that is the only place the link arrives.
+- **The result says where it came from** — `DeeplinkResponse.source` (`DeepLinkSource`: `ul`, `scheme`, `cta`, `push`, `aak`, `deferred`, `foreign`), `isFirstSession`, `clickId` (the click of a direct link) and `matchGuaranteed`, which is `false` for a deferred result matched by IP address and iOS version alone. `matchGuaranteed` says whose device it is, not who wrote the link: anyone can write a link, so check `deep_link_value` before acting on it for anything sensitive.
+- **Errors the SDK recovers from** — `DeepLinkError.timeout`, `.network` and `.server` come with `status == .error`, and the SDK tries again (see Changed).
+- **Deferred deep link from the clipboard** — `deferredDeepLinkClipboard` (`.disabled` by default, `.prompt`, `.pasteControl`) and `handlePastedDeepLink(_:)`. For templates with the clipboard option the RightLink page copies a token, and the first launch reads it once, so the install finds its link without an advertising identifier. `.prompt` shows iOS's paste prompt, once per install, never offline and, while `waitForATTBeforeStart` holds, only after the ATT answer; with `.pasteControl` you show `UIPasteControl` in onboarding and pass what was pasted, or `nil` for a skip, and the first launch's deferred deep link waits for it.
+- **Links in your app's scheme** — `yourapp://rightlink?as_rl=<the RightLink link, percent-encoded>` is read as the link it wraps, with `source == .scheme`.
+- **`testMode`** — every click and event says it is test traffic, which is kept out of reports, postbacks and billing. Set it before `start()`.
+- **`.pasteControl` waits for `handlePastedDeepLink(_:)`** — the first launch looks up no deferred deep link until your app calls it, with `nil` when the user skips, so call it on every way out of onboarding. The install waits for the call too, at most 60 seconds from `start()`, so it can carry the click; a paste after that still delivers the deep link.
+- **`DeeplinkResponse` is `Sendable`**, with `DeepLinkStatus`, `DeepLinkError` and `DeepLinkSource`, so an app in Swift 6 language mode can await `handleDeepLink(url:)` in a `Task`.
+
+### Changed
+- **Navigate only on `found`** — `found` now means a RightLink link: your `*.rightlink.me` host or a domain in `brandedDomains`, also inside `as_rl`. Any other URL comes back `notFound` with the URL in `deeplink` and nothing read from it, and creates no click; a scheme URL without `as_rl` is your own routing and comes back `notFound` with `source == .scheme`. 2.x answered `found` for every URL.
+- **Each result is delivered once** — results that came before any listener, up to the last five, wait in order and go to the first listener registered; a listener registered later gets no replay. 2.x replayed the most recent result to every new listener.
+- **`error` is delivered, and a short link is tried again** — a short link that cannot be resolved yet comes as `error`: `.network` without a network, `.timeout` or `.server` when the resolve fails with one. Offline the SDK makes no attempt and spends no try; it resolves the link when the network comes back or at the next start, up to three failed tries with a network within an hour of the tap, and delivers `found` then. After an hour the link is not resolved or navigated any more: the next start gives no second callback for it. A deleted link is `notFound`.
+- **The deferred deep link answers within 5 seconds of `start()`** — the link, `notFound`, or `error`. With `waitForATTBeforeStart` the deferred answer arrives within 5 seconds of the ATT answer, in every clipboard mode and also offline; with `.pasteControl`, within 5 seconds of the paste if that comes later. An answer after that is not delivered in that session, so the screen does not change under the user; the next start, cold or from the background, asks again, on at most three starts. Once the user has opened a link in the app's process, a late answer, from before the link or after it, ends the lookup instead and is never delivered, not then and not at a later start. A start without network sends nothing and does not count.
+- **A short RightLink counts at the tap, also offline** — the click and the `app_open` of that open are recorded when the link is tapped, with the time of the tap, and leave once the network is back. Nothing of the tap is lost when the app is killed before the network returns. The open is attributed to the link's campaign whether or not the resolve has finished, so a tap your listener saw as `error` is already counted.
+- **A second short link tapped before the first resolves replaces it** — your listener gets the answer for the later one; both taps are counted.
+- **Values appended to a short link are reported** — `as_sub1`…`as_sub5` and the other appendable values in a short link's query go with the open, as for a long link; the link's `pid` and campaign come from the link's definition, never from the query.
+- **Deferred deep link without an advertising identifier** — without a clipboard token the lookup matches the click by IP address and iOS version when there is no IDFA, or when the IDFA finds no click (a link tapped in a browser carries none), unless the user refused advertising identifiers in your consent (ad storage or ad user data denied), in which case there is no lookup and the result is `notFound`. After an ATT refusal (denied, or restricted on the device) the lookup still runs, so the deep link still arrives; without tracking permission the install is not attributed by IP address. Such a match routes the user with `matchGuaranteed == false`; AdShift credits the install to its click only with a valid IDFA. The lookup sends this install's `install_id`.
+- **A deferred result has no `deeplink`** — its link is in `deep_link_value` and `deep_link_sub1`…`deep_link_sub5`; an answer with neither is `notFound`.
+- **The click waits for `start()` and the consent decision** — a link opened before `start()` keeps its tap time and its click leaves once `start()` has applied your consent (and, with `waitForATTBeforeStart`, the ATT answer). The click carries the IDFV only while consent allows device identifiers. Each open by link has one enriched `app_open` of its own.
+- **Clicks queued for more than 7 days are dropped** — a click that could not be sent within 7 days of the tap is not sent any more.
+- **The same link twice is one tap** — a link handed over again within 10 seconds (the scene and `onOpenURL`, a notification tapped twice), or the gateway page's button opening a link already opened, gets no second click, `app_open` or delivery.
+- **Under a server opt-out and after `stop()` links still route** — the link is delivered, with no click and nothing sent, and `handleDeepLink(url:)` no longer throws `trackingDisabled`.
+- **Under a server opt-out a short link is not resolved** — it comes back `found` with the short link as tapped in `deeplink`, without the values stored in it.
+- **Only attribution parameters leave the device** — the click, `app_open`, `app_install` and the link the SDK forwards carry only the attribution keys of a link (`pid`, `c`, `as_*`, `utm_*`, `deep_link_value`, `deep_link_sub1`…`5`, click ids); any other key stays in `params` for your app.
+- **A backup restored onto another device is a new install** — it sends its own install and looks up its own deferred deep link.
+- **An app updated from 2.x looks up no deferred deep link** — its install already happened, so there is nothing to defer.
+- **`app_install` waits for the deferred deep link** — on the first launch it waits up to 5 seconds for the lookup, so it carries the click the lookup found; with `.pasteControl` first for `handlePastedDeepLink(_:)`, at most 60 seconds from `start()`, and with `waitForATTBeforeStart` first for the ATT answer. Events tracked meanwhile are sent after it.
+- **Events wait for the device id before the first unlock** — an app launched before the device's first unlock after a restart, for example by a push, keeps its events until the Keychain gives the AdShift device id, then sends them with it.
+- **The privacy report lists Coarse Location** — the SDK's privacy manifest now declares it (linked to the user, used for tracking, for analytics and app functionality): AdShift derives the country and city from the IP address of each request, and the deferred deep link can match by it. Check your App Privacy answers against the regenerated report.
+- **No web view at launch** — the SDK no longer creates a hidden `WKWebView` on every launch, and no longer links WebKit.
+- **One `app_open` per open, carrying the link's click** — the `app_open` of a start or a return to the foreground is queued at once, and the click of the link the app was opened with goes on it; events tracked right after `start()` leave after it. The first launch's install waits for that link too. A link opened while the app is in use gets an `app_open` of its own. 2.x could send a plain `app_open` and a second one with the click for the same open.
+- **Window 1's conversion value waits for the attribution answer** — the fine value, which carries whether AdShift attributed the install, goes out once the first attribution answer is in, and the window locks only on the final answer; before that only the coarse value goes out.
+- **Windows 2 and 3 carry window 1's last fine value** — instead of 0, so a postback for an ad measured under SKAN 3 keeps it; and they send their first value at the first activity in the window, an event or a launch or return in the foreground, even when it is low.
+- **A coarse value that rises under the same fine value is sent** — window 1 compares the fine value, then the coarse one. Not on iOS 16.1.0, which takes no coarse value.
+- **The ad revenue cap is 10 USD per impression after conversion** — `logAdRevenue` converts the amount with the built-in rates before checking the cap, so a small amount in a currency with many units per dollar, such as 50 KRW, now counts; an amount in an unknown currency is kept.
+- **SKAN revenue comes from `as_revenue`, else `revenue`, never `value`** — with the currency from `as_currency` or `currency`, else USD.
+- **The privacy report lists Other Diagnostic Data** — the SDK sends a short integration diagnostic with the install and with an `app_open` when it changes, declared in its privacy manifest. Check your App Privacy answers against the regenerated report.
+
+### Fixed
+- **Apps with scenes lose no link on a cold start** — the scene helpers above take it out of the connection options.
+- **A link handed over after `start()`** — SwiftUI's `onOpenURL` after `onAppear` — puts its click on the open's one `app_open`; 2.x sent none for it.
+- **A link opened while the app is in use** no longer rides the next cold start's `app_open`.
+- **SKAN revenue in a foreign currency converts correctly** — the configuration's rates are applied as USD per unit of the currency; 2.4.0 applied them the other way round, so 9.99 PLN counted as about 39 USD.
+- **A late Apple Ads attribution token still goes on the install** — a token that arrives after its 2.5-second wait, while the install is still waiting for the deferred deep link or the ATT answer, is sent with the install instead of being left out.
+
+### Upgrading
+- **Depend on `~> 3.0`** — Swift Package Manager `from: "3.0.0"`, CocoaPods `pod 'AdshiftSDK', '~> 3.0'`.
+- **A `switch` over `DeepLinkError` without `default` no longer compiles** — `DeepLinkError` has three new cases; handle `.timeout`, `.network` and `.server`, or add `@unknown default`. The release is binary compatible; this is the one source break.
+- **Route only on `status == .found`** and treat `.error` as "not yet": the same link can still arrive as `found`.
+- **With a CMP, call `start()` after `setConsentData`** — the click of the link that opened the app leaves with the consent `start()` applied.
+- **Register your listener once, early** — results that wait go to the first listener only.
+- **Apps with scenes** — call `handleDeepLink(connectionOptions:)` in `scene(_:willConnectTo:options:)` and `handleDeepLink(userActivity:)` in `scene(_:continue:)`.
+- **Review your App Privacy answers** — Coarse Location, for analytics and app functionality, is new in the privacy report.
+- **The 2.x keys are removed from `UserDefaults`** — the first time 3.0 runs after the upgrade it removes `click_id`, `click_time`, `deep_link_params` and `raw_link_url` once; if your app keeps its own data under these names, move it first.
+
 ## [2.4.0] - 2026-10-06
 
 2.3.0 was not published; everything it contained ships in this release.
