@@ -2,6 +2,47 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [3.0.0] - 2026-11-11
+
+### Added
+- **Universal Link helpers for apps with scenes** — `handleDeepLink(userActivity:)` and `handleDeepLink(connectionOptions:)` pass the link on to `handleDeepLink(url:)`.
+- **The result says where it came from** — `DeeplinkResponse.source` (`ul`, `scheme`, `cta`, `push`, `aak`, `deferred`, `foreign`), `isFirstSession`, `clickId` and `matchGuaranteed`. `matchGuaranteed` is `false` for a deferred result that came without a clipboard token or a matching IDFA: route the user, but do not sign them in or grant a reward because of it.
+- **Errors the SDK recovers from** — `DeepLinkError.timeout`, `.network` and `.server` come with `status == .error`; the SDK tries again and delivers `found` when the link resolves.
+- **Deferred deep link from the clipboard** — `deferredDeepLinkClipboard` (`.disabled` by default, `.prompt`, `.pasteControl`) and `handlePastedDeepLink(_:)`, for RightLink templates with the clipboard option: the install finds its link without an advertising identifier. `.prompt` shows iOS's paste prompt once per install. With `.pasteControl` you show `UIPasteControl` in onboarding and pass what was pasted, or `nil` when the user skips; call it on every way out of onboarding, because the first launch's deferred deep link waits for it.
+- **Links in your app's scheme** — `yourapp://rightlink?as_rl=<the RightLink link, percent-encoded>` is read as the link it wraps, with `source == .scheme`.
+- **`testMode`** — marks every click and event as test traffic, which is kept out of reports, postbacks and billing. Set it before `start()`.
+- **`DeeplinkResponse` is `Sendable`**, with `DeepLinkStatus`, `DeepLinkError` and `DeepLinkSource`, so an app in Swift 6 language mode can await `handleDeepLink(url:)` in a `Task`.
+
+### Changed
+- **Navigate only on `found`** — `found` now means a RightLink link: your `*.rightlink.me` host or a domain in `brandedDomains`. Any other URL comes back `notFound` with the URL in `deeplink`, and creates no click. 2.x answered `found` for every URL.
+- **Each result is delivered once** — results that came before any listener, up to the last five, go to the first listener registered; a listener registered later gets no replay. 2.x replayed the most recent result to every new listener.
+- **A short link that cannot be resolved yet comes as `error`** — with `.network`, `.timeout` or `.server`. The SDK tries again when the network is back or at the next start and delivers `found` then; an hour after the tap it stops. A deleted link, or one the SDK gave up on, is `notFound`.
+- **A tap on a short link is counted when it happens, also without a network** — a tap your listener saw as `error` is already counted.
+- **Values appended to a short link are reported** — values in a short link's own query, such as `as_sub1`…`as_sub5`, go with the open, as for a long link; the source, the campaign and the link's settings always come from the link itself.
+- **The deferred deep link answers within 5 seconds of `start()`** — the link, `notFound` or `error`. With `waitForATTBeforeStart` it answers within 5 seconds of the ATT answer; with `.pasteControl`, within 5 seconds of the paste. A later answer is not delivered in that session, so the screen does not change under the user; the next start asks again.
+- **Deferred deep link without an advertising identifier** — with no IDFA and no clipboard token the link can still arrive, with `matchGuaranteed == false`. After an ATT refusal the link still arrives, but the install is not attributed to its click. There is no lookup when the user denied ad storage or ad user data in your consent.
+- **A deferred result has no `deeplink`** — its link is in `deep_link_value` and `deep_link_sub1`…`deep_link_sub5`.
+- **The same link passed twice counts once** — for example from the scene and from `onOpenURL`, or a notification tapped twice.
+- **After `stop()` links still reach your listener** — nothing is sent, and `handleDeepLink(url:)` no longer throws `trackingDisabled`.
+- **Only attribution parameters leave the device** — of a link's query the SDK sends `pid`, `c` or `campaign`, `is_retargeting`, `as_*`, `utm_*`, `deep_link_value`, `deep_link_sub1`…`5` and click ids; any other key stays in `params` for your app.
+- **One `app_open` per open** — an open by a link is one `app_open` that carries the link's click. 2.x could send two for the same open.
+- **SKAN revenue comes from `as_revenue` with `as_currency`, else `revenue` with `currency`, never `value`** — USD when the pair has no currency.
+- **The 10 USD ad revenue cap applies after currency conversion** — so a small amount in a currency with many units per dollar, such as 50 KRW, now counts.
+- **The privacy report lists Coarse Location and Other Diagnostic Data** — the SDK's privacy manifest now declares both.
+
+### Fixed
+- **A link passed after `start()` goes on the open's `app_open`** — for example from SwiftUI's `onOpenURL` after `onAppear`; in 2.x that `app_open` went without the link.
+
+### Upgrading
+- **Depend on 3.0** — Swift Package Manager `from: "3.0.0"`, CocoaPods `pod 'AdshiftSDK', '~> 3.0'`.
+- **A `switch` over `DeepLinkError` without `default` no longer compiles** — handle `.timeout`, `.network` and `.server`, or add `@unknown default`. This is the one source break; the release is binary compatible.
+- **Route only on `status == .found`** and treat `.error` as "not yet": the same link can still arrive as `found`.
+- **With a CMP, call `start()` after `setConsentData`** — so the link that opened the app is recorded under that consent.
+- **Register your listener once, early** — results that wait go to the first listener only.
+- **Apps with scenes** — call `handleDeepLink(connectionOptions:)` in `scene(_:willConnectTo:options:)`, the only place the link arrives on a cold start, and `handleDeepLink(userActivity:)` in `scene(_:continue:)` and `application(_:continue:restorationHandler:)`.
+- **Review your App Privacy answers** — check them against the regenerated privacy report.
+- **The SDK removes its 2.x keys from `UserDefaults`** — `click_id`, `click_time`, `deep_link_params` and `raw_link_url`, once, the first time 3.0 runs; if your app keeps its own data under these names, move it first.
+
 ## [2.4.0] - 2026-10-06
 
 2.3.0 was not published; everything it contained ships in this release.
