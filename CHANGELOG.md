@@ -6,7 +6,7 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 
 ### Added
 - **Universal Link helpers for apps with scenes** — `handleDeepLink(userActivity:)` and `handleDeepLink(connectionOptions:)` pass the link on to `handleDeepLink(url:)`. Call the first from `application(_:continue:restorationHandler:)` and `scene(_:continue:)`, the second from `scene(_:willConnectTo:options:)`: on a cold start in an app with scenes that is the only place the link arrives.
-- **The result says where it came from** — `DeeplinkResponse.source` (`ul`, `scheme`, `cta`, `push`, `aak`, `deferred`, `foreign`), `isFirstSession`, `clickId` and `matchGuaranteed`. `matchGuaranteed` is `false` for a deferred result matched by IP address and iOS version alone: check `deep_link_value` before acting on such a result for anything sensitive, such as signing in or a referral reward.
+- **The result says where it came from** — `DeeplinkResponse.source` (`ul`, `scheme`, `cta`, `push`, `aak`, `deferred`, `foreign`), `isFirstSession`, `clickId` and `matchGuaranteed`. `matchGuaranteed` is `false` for a deferred result that came without a clipboard token or a matching IDFA: route the user, but do not sign them in or grant a reward because of it.
 - **Errors the SDK recovers from** — `DeepLinkError.timeout`, `.network` and `.server` come with `status == .error`; the SDK tries again and delivers `found` when the link resolves.
 - **Deferred deep link from the clipboard** — `deferredDeepLinkClipboard` (`.disabled` by default, `.prompt`, `.pasteControl`) and `handlePastedDeepLink(_:)`, for RightLink templates with the clipboard option: the install finds its link without an advertising identifier. `.prompt` shows iOS's paste prompt once per install. With `.pasteControl` you show `UIPasteControl` in onboarding and pass what was pasted, or `nil` when the user skips; call it on every way out of onboarding, because the first launch's deferred deep link waits for it.
 - **Links in your app's scheme** — `yourapp://rightlink?as_rl=<the RightLink link, percent-encoded>` is read as the link it wraps, with `source == .scheme`.
@@ -20,7 +20,7 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 - **A tap on a short link is counted when it happens, also without a network** — a tap your listener saw as `error` is already counted.
 - **Values appended to a short link are reported** — `as_sub1`…`as_sub5` and the other values in a short link's query go with the open, as for a long link; the source and the campaign always come from the link itself.
 - **The deferred deep link answers within 5 seconds of `start()`** — the link, `notFound` or `error`. With `waitForATTBeforeStart` it answers within 5 seconds of the ATT answer; with `.pasteControl`, within 5 seconds of the paste. A later answer is not delivered in that session, so the screen does not change under the user; the next start asks again.
-- **Deferred deep link without an advertising identifier** — with no IDFA and no clipboard token the link can still arrive, matched by IP address and iOS version, with `matchGuaranteed == false`. After an ATT refusal the link still arrives, but the install is not attributed to its click. There is no lookup when the user denied ad storage or ad user data in your consent.
+- **Deferred deep link without an advertising identifier** — with no IDFA and no clipboard token the link can still arrive, with `matchGuaranteed == false`. After an ATT refusal the link still arrives, but the install is not attributed to its click. There is no lookup when the user denied ad storage or ad user data in your consent.
 - **A deferred result has no `deeplink`** — its link is in `deep_link_value` and `deep_link_sub1`…`deep_link_sub5`.
 - **The same link passed twice counts once** — for example from the scene and from `onOpenURL`, or a notification tapped twice.
 - **After `stop()` links still reach your listener** — nothing is sent, and `handleDeepLink(url:)` no longer throws `trackingDisabled`.
@@ -28,9 +28,7 @@ All notable changes to the AdShift iOS SDK will be documented in this file.
 - **One `app_open` per open** — an open by a link is one `app_open` that carries the link's click. 2.x could send two for the same open.
 - **A backup restored onto another device is a new install.**
 - **No web view at launch** — the SDK no longer creates a hidden `WKWebView`, and no longer links WebKit.
-- **SKAN: window 1's fine value goes out after AdShift's attribution answer** — until then only the coarse value is sent.
-- **SKAN: windows 2 and 3 keep window 1's last fine value** — instead of 0, and they send their first value at the first activity in the window.
-- **SKAN: a coarse value that rises under the same fine value is sent** — not on iOS 16.1.0, which takes no coarse value.
+- **SKAN: a coarse value that rises while the fine value stays the same is now sent.**
 - **SKAN revenue comes from `as_revenue`, else `revenue`, never `value`** — with the currency from `as_currency` or `currency`, else USD.
 - **The 10 USD ad revenue cap applies after currency conversion** — so a small amount in a currency with many units per dollar, such as 50 KRW, now counts.
 - **The privacy report lists Coarse Location and Other Diagnostic Data** — the SDK's privacy manifest now declares both. Check your App Privacy answers against the regenerated report.
