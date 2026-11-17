@@ -29,7 +29,7 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AdShift/ios-sdk", from: "2.4.0")
+    .package(url: "https://github.com/AdShift/ios-sdk", from: "3.1.0")
 ]
 ```
 
