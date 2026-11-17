@@ -36,8 +36,10 @@ dependencies: [
 ### CocoaPods
 
 ```ruby
-pod 'AdshiftSDK', '~> 2.4'
+pod 'AdshiftSDK', :podspec => 'https://raw.githubusercontent.com/AdShift/ios-sdk/v3.1.0/AdshiftSDK.podspec'
 ```
+
+From 3.1.0 the SDK is not on the CocoaPods trunk: the `Podfile` points at the podspec of the release, with the version in the URL. A line with a version requirement, such as `pod 'AdshiftSDK', '~> 3.0'`, installs 3.0.0 at most.
 
 Required Info.plist entries, entitlements and the ATT setup are covered in the [installation guide](https://dev.adshift.com/docs/ios-sdk/installation). Two keys make Apple send AdShift a copy of each winning postback: `NSAdvertisingAttributionReportEndpoint` for SKAdNetwork and `AttributionCopyEndpoint` for AdAttributionKit (iOS 17.4+), both set to `https://adshift.com`. With `isDebug = true`, the SDK logs on start when either is missing.
 
