@@ -2,6 +2,14 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
+## [3.1.0] - Unreleased
+
+### Changed
+- **People who already had your app are not counted as new installs** — people who had your app before its first version with the AdShift SDK and update to a version with this SDK are counted as existing users, once that version's release day is set in the dashboard.
+
+### Upgrading
+- **CocoaPods: point your `Podfile` at the podspec** — replace your `pod 'AdshiftSDK'` line with `pod 'AdshiftSDK', :podspec => 'https://raw.githubusercontent.com/AdShift/ios-sdk/v3.1.0/AdshiftSDK.podspec'`. 3.1.0 is not on the CocoaPods trunk, so a line with a version requirement installs 3.0.0 at most. Swift Package Manager: nothing to change.
+
 ## [3.0.0] - 2026-11-11
 
 ### Added
