@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'AdshiftSDK'
-  s.version          = '3.0.0'
+  s.version          = '3.1.0'
   s.summary          = 'AdShift iOS SDK - Mobile Attribution & Analytics'
   
   s.description      = <<-DESC
@@ -15,7 +15,8 @@ Pod::Spec.new do |s|
   s.author           = { 'AdShift' => 'support@adshift.com' }
   
   s.source           = { 
-    :http => "https://github.com/AdShift/ios-sdk/releases/download/v#{s.version}/AdshiftSDK.xcframework.zip"
+    :http => "https://github.com/AdShift/ios-sdk/releases/download/v#{s.version}/AdshiftSDK.xcframework.zip",
+    :sha256 => '402b9e13ecd2f6d32b433b7a8c12394234ea5532787ea11032f5650b05ad837c'
   }
   
   s.platform         = :ios, '15.0'

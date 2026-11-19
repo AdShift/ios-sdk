@@ -29,14 +29,14 @@ Or add it to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AdShift/ios-sdk", from: "3.0.0")
+    .package(url: "https://github.com/AdShift/ios-sdk", from: "3.1.0")
 ]
 ```
 
 ### CocoaPods
 
 ```ruby
-pod 'AdshiftSDK', :podspec => 'https://raw.githubusercontent.com/AdShift/ios-sdk/v3.0.0/AdshiftSDK.podspec'
+pod 'AdshiftSDK', :podspec => 'https://raw.githubusercontent.com/AdShift/ios-sdk/v3.1.0/AdshiftSDK.podspec'
 ```
 
 From 3.1.0 the SDK is not on the CocoaPods trunk: the `Podfile` points at the podspec of the release, with the version in the URL. A line with a version requirement, such as `pod 'AdshiftSDK', '~> 3.0'`, installs 3.0.0 at most.

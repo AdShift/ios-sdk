@@ -2,7 +2,7 @@
 
 All notable changes to the AdShift iOS SDK will be documented in this file.
 
-## [3.1.0] - Unreleased
+## [3.1.0] - 2026-11-19
 
 ### Changed
 - **People who already had your app are not counted as new installs** — people who had your app before its first version with the AdShift SDK and update to a version with this SDK are counted as existing users, once that version's release day is set in the dashboard.
